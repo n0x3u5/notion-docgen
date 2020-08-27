@@ -1,0 +1,38 @@
+{
+  "name": "notion-docgen",
+  "version": "0.0.1",
+  "description": "Generate docsify compatible markdown from Notion exported markdown",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {
+    "fs-extra": "^9.0.1",
+    "mdast-builder": "^1.1.1",
+    "mdast-util-toc": "^5.0.3",
+    "remark": "^12.0.1",
+    "slugify": "^1.4.5",
+    "unist-util-map": "^2.0.1",
+    "unist-util-visit": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.1",
+    "docsify-cli": "^4.4.1",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
+  },
+  "scripts": {
+    "prestart": "npm run scrape",
+    "start": "docsify start docs",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scrape": "rm -rf docs/public-documentation && ts-node index.ts"
+  },
+  "keywords": [
+    "docsify",
+    "notion",
+    "documentation",
+    "markdown"
+  ],
+  "author": "Nakshatra Mukhopadhyay",
+  "license": "MIT"
+}
