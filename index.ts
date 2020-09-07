@@ -184,6 +184,12 @@ function groupByIsMarkdown(items: Item[]) {
   );
 }
 
+function ensureFiles(files: string[]) {
+  return Promise.all(
+    files.map((path) => ensureFile(resolve(outDir, normalizePath(path))))
+  );
+}
+
 async function y(srcDirectory: string): Promise<Ret> {
   const dirItems = await readDir(srcDirectory);
 
@@ -208,16 +214,8 @@ async function y(srcDirectory: string): Promise<Ret> {
   const [nonToCMarkdownItemContents, tocItemContents] = await Promise.all([
     readUTF8Files(nonToCMarkdownItems.map(({ path }) => path)),
     readUTF8Files(tocItems.map(({ path }) => path)),
-    Promise.all(
-      nonToCMarkdownItems.map(({ path }) =>
-        ensureFile(resolve(outDir, normalizePath(path)))
-      )
-    ),
-    Promise.all(
-      nonToCNonMarkdownItems.map(({ path }) =>
-        copy(path, resolve(outDir, normalizePath(path)))
-      )
-    ),
+    ensureFiles(nonToCMarkdownItems.map(({ path }) => path)),
+    ensureFiles(nonToCNonMarkdownItems.map(({ path }) => path)),
   ]);
 
   nonToCMarkdownItemContents.forEach(({ content, path }) => {
@@ -229,9 +227,9 @@ async function y(srcDirectory: string): Promise<Ret> {
       if (
         node.type === 'text' &&
         typeof node.value === 'string' &&
-        node.value.toLowerCase().includes('le of co')
+        node.value.toLowerCase().includes('table of content')
       ) {
-        const tocTree = toc(tree, { skip: 'Side Effects', tight: true });
+        const tocTree = toc(tree, { tight: true });
 
         return tocTree.map == null
           ? node
