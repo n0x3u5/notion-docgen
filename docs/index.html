@@ -9,11 +9,60 @@
       name="viewport"
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
-    <link rel="stylesheet" href="vendor/themes/vue.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css"
+    />
     <style>
+      :root {
+        --sidebar-toggle-offset-top: 60px;
+        --sidebar-width: 29rem;
+        --navbar-root-color: #5f5d5d;
+        --content-max-width: 90%;
+        --base-font-family: Source Sans Pro -apple-system, BlinkMacSystemFont,
+          'Segoe UI', Helvetica, 'Apple Color Emoji', Arial, sans-serif,
+          'Segoe UI Emoji', 'Segoe UI Symbol';
+        --heading-h1-font-weight: 700;
+        --heading-h2-font-weight: 600;
+        --heading-h3-font-weight: 600;
+        --strong-font-weight: 700;
+        --sidebar-nav-link-background-image: none;
+        --sidebar-nav-pagelink-background-image: none;
+        --sidebar-nav-link-before-content: '-';
+        --sidebar-nav-link-padding: 0.25em 0 0.25em 0;
+        --sidebar-nav-pagelink-padding: 0.25em 0 0.25em 0;
+        --toc-width: 19rem;
+      }
+
+      li::marker {
+        display: none;
+      }
+
+      pre::after {
+        display: none;
+      }
+
+      .sidebar-nav p {
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .sidebar-nav p > a {
+        text-transform: initial;
+      }
+
+      .page_toc {
+        font-size: 0.9em;
+      }
+
       .sidebar {
         top: 60px;
-        bottom: 150px;
+        bottom: 0;
+        height: auto;
       }
 
       .sidebar-toggle {
@@ -21,11 +70,7 @@
       }
 
       .content {
-        top: 60px;
-        position: fixed;
-        padding-top: 0;
-        bottom: 150px;
-        overflow: auto;
+        margin-top: 60px;
       }
 
       header {
@@ -38,6 +83,7 @@
         height: 60px;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.07);
         z-index: 30;
+        background-color: #ffffff;
       }
 
       .header-logo {
@@ -65,44 +111,34 @@
       }
 
       .app-nav {
-        display: inline-block;
-        color: #5f5d5d;
-        font-size: 16px;
         font-weight: 600;
-        margin-top: 0;
-        position: unset;
+        top: unset;
       }
 
-      .app-nav a#get-muze {
+      .app-nav li#get-muze {
         border: none;
         outline: none;
         background: linear-gradient(222.64deg, #3f74be, #114794);
-        color: white;
-        cursor: pointer;
         border-radius: 2px;
-        padding-left: 14px;
-        padding-right: 14px;
+        padding: 8px 10px 8px 10px;
         margin-right: 0;
       }
 
-      span#hamburger {
-        display: none;
+      .app-nav li#get-muze > a {
+        color: white;
+        cursor: pointer;
       }
 
       footer {
-        position: fixed;
-        height: 150px;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        overflow: auto;
         box-shadow: 0 -2px 4px 0 rgba(0, 0, 0, 0.07);
         background-color: #0a2747;
+        padding-top: 23px;
         color: #ffffff;
-        padding-top: 30px;
+        font-size: 14px;
       }
 
       footer a {
+        display: inline-block;
         color: #ffffff;
         font-weight: 600;
         text-decoration: none;
@@ -126,9 +162,7 @@
       footer hr {
         border-top: none;
         border-bottom: 1px solid rgba(204, 204, 204, 0.2);
-        margin-bottom: 1.25em;
-        margin-left: 14px;
-        margin-right: 25px;
+        margin: 0.2em 25px 1em 14px;
       }
 
       #footer-top,
@@ -146,39 +180,29 @@
     <header>
       <span class="header-logo">
         <a href="/">
-          <img src="muze-logo.svg" alt="Muze Logo" />
-          <span>Muze</span>
+          <img src="muze-logo.svg" alt="Muze Logo" /> <span>Muze</span>
         </a>
       </span>
       <nav>
-        <a href="/demos/wa/latest">Demos</a>
-        <a href="/docs/wa/latest/installation/getting-started">Docs</a>
-        <a href="/muze-wa/eula">License</a>
-        <a href="/contributors">Contributors</a>
-        <a href="/contact">Contact Us</a>
-        <a href="/get" id="get-muze">Get Muze</a>
+        <ul>
+          <li>
+            <a href="https://muzejs.org/demos/wa/latest">Demos</a>
+          </li>
+          <li>
+            <a href="/installation/getting-started">Docs</a>
+          </li>
+          <li><a href="https://muzejs.org/muze-wa/eula">License</a></li>
+          <li><a href="https://muzejs.org/contributors">Contributors</a></li>
+          <li><a href="https://muzejs.org/contact">Contact Us</a></li>
+          <li id="get-muze"><a href="/get">Get Muze</a></li>
+        </ul>
       </nav>
-      <span id="hamburger" role="img" aria-label="menu"
-        ><svg
-          viewBox="64 64 896 896"
-          focusable="false"
-          class=""
-          data-icon="menu"
-          width="1em"
-          height="1em"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            d="M904 160H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8zm0 624H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8zm0-312H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8z"
-          ></path></svg
-      ></span>
     </header>
     <div id="app"></div>
     <footer>
       <div id="footer-top">
         <ul>
-          <li><a href="/contact">Contact Us</a></li>
+          <li><a href="https://muzejs.org/contact">Contact Us</a></li>
           <li>
             <a
               target="_blank"
@@ -250,11 +274,39 @@
         loadSidebar: true,
         auto2top: true,
         homepage: 'public-documentation/installation/getting-started.md',
+        mergeNavbar: true,
+        plugins: [
+          (hook) => {
+            hook.ready(() => {
+              const viewportHeight = window.innerHeight;
+              const footer = document.getElementsByTagName('footer')[0];
+              const sidebar = document.getElementsByClassName('sidebar')[0];
+
+              sidebar.style.transitionProperty = 'none';
+
+              document.addEventListener('scroll', () => {
+                const { top } = footer.getBoundingClientRect();
+
+                const offset = top - viewportHeight;
+
+                if (offset < 0) {
+                  sidebar.style.bottom = `${-offset}px`;
+                } else {
+                  if (parseFloat(getComputedStyle(sidebar).bottom) != 0) {
+                    sidebar.style.bottom = '0px';
+                  }
+                }
+              });
+            });
+          },
+        ],
       };
     </script>
     <script src="vendor/docsify.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-jsx.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
     <script src="//unpkg.com/docsify-plugin-flexible-alerts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify-themeable@0"></script>
+    <script src="//unpkg.com/docsify-page-toc/dist/docsify-page-toc.js"></script>
   </body>
 </html>
