@@ -35,7 +35,6 @@
         --sidebar-nav-link-before-content: '-';
         --sidebar-nav-link-padding: 0.25em 0 0.25em 0;
         --sidebar-nav-pagelink-padding: 0.25em 0 0.25em 0;
-        --toc-width: 19rem;
       }
 
       li::marker {
@@ -55,8 +54,24 @@
         text-transform: initial;
       }
 
-      .page_toc {
+      .nav {
         font-size: 0.9em;
+      }
+
+      div.page_toc {
+        padding-right: 15px;
+      }
+
+      .markdown-section {
+        min-width: 450px;
+      }
+
+      @media screen and (max-width: 1300px) {
+        .nav {
+          padding-left: 45px;
+          padding-top: 1.5rem;
+          max-width: 90%;
+        }
       }
     </style>
   </head>
