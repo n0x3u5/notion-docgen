@@ -3,7 +3,7 @@
 import { stat, readdir, readFile, writeFile, ensureFile, copy } from 'fs-extra';
 import type { Stats } from 'fs-extra';
 import { URL } from 'url';
-import { resolve, extname, basename, sep, parse } from 'path';
+import { resolve, extname, basename, sep, parse, relative } from 'path';
 import slugify from 'slugify';
 import remark from 'remark';
 import toc from 'mdast-util-toc';
@@ -53,6 +53,7 @@ interface Ret {
   toc?: [string, Parent][];
 }
 
+const DOCS_ROOT_NAME = 'public-documentation';
 const sourceDir = resolve('notion-md-export');
 const outDir = resolve('docs');
 const sidebarFile = resolve(outDir, '_sidebar.md');
@@ -164,10 +165,10 @@ function normalizePathToken(pathToken: string, idx: number, arr: string[]) {
 }
 
 function normalizePath(path: string): string {
-  return path
-    .substring(sourceDir.length + 1)
-    .split(sep)
-    .map(normalizePathToken)
+  return [DOCS_ROOT_NAME]
+    .concat(
+      relative(sourceDir, path).split(sep).slice(1).map(normalizePathToken)
+    )
     .join(sep);
 }
 
@@ -184,7 +185,13 @@ function groupByIsMarkdown(items: Item[]) {
   );
 }
 
-async function y(srcDirectory: string): Promise<Ret> {
+function ensureFiles(files: string[]) {
+  return Promise.all(
+    files.map((path) => ensureFile(resolve(outDir, normalizePath(path))))
+  );
+}
+
+async function scrape(srcDirectory: string): Promise<Ret> {
   const dirItems = await readDir(srcDirectory);
 
   const { files, dirs: subDirs } = groupByIsDirectory(dirItems);
@@ -208,17 +215,13 @@ async function y(srcDirectory: string): Promise<Ret> {
   const [nonToCMarkdownItemContents, tocItemContents] = await Promise.all([
     readUTF8Files(nonToCMarkdownItems.map(({ path }) => path)),
     readUTF8Files(tocItems.map(({ path }) => path)),
-    Promise.all(
-      nonToCMarkdownItems.map(({ path }) =>
-        ensureFile(resolve(outDir, normalizePath(path)))
-      )
-    ),
-    Promise.all(
-      nonToCNonMarkdownItems.map(({ path }) =>
-        copy(path, resolve(outDir, normalizePath(path)))
-      )
-    ),
+    ensureFiles(nonToCMarkdownItems.map(({ path }) => path)),
+    ensureFiles(nonToCNonMarkdownItems.map(({ path }) => path)),
   ]);
+
+  nonToCNonMarkdownItems.forEach((item) =>
+    copy(item.path, resolve(outDir, normalizePath(item.path)))
+  );
 
   nonToCMarkdownItemContents.forEach(({ content, path }) => {
     const r = remark();
@@ -229,9 +232,9 @@ async function y(srcDirectory: string): Promise<Ret> {
       if (
         node.type === 'text' &&
         typeof node.value === 'string' &&
-        node.value.toLowerCase().includes('le of co')
+        node.value.toLowerCase().includes('table of content')
       ) {
-        const tocTree = toc(tree, { skip: 'Side Effects', tight: true });
+        const tocTree = toc(tree, { tight: true });
 
         return tocTree.map == null
           ? node
@@ -279,7 +282,7 @@ async function y(srcDirectory: string): Promise<Ret> {
       docFileMap: nonToCMarkdownFileMapEntries,
     };
   } else {
-    const rets = await Promise.all(subDirs.map(({ path }) => y(path)));
+    const rets = await Promise.all(subDirs.map(({ path }) => scrape(path)));
 
     const x = rets
       .map(({ toc }) => toc)
@@ -362,8 +365,8 @@ async function y(srcDirectory: string): Promise<Ret> {
   }
 }
 
-(async function x() {
-  const { toc: sideBarToC, docFileMap: filesMap } = await y(sourceDir);
+(async () => {
+  const { toc: sideBarToC, docFileMap: filesMap } = await scrape(sourceDir);
 
   const fileHashMap = Object.fromEntries(filesMap);
 
