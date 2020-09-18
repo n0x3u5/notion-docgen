@@ -35,11 +35,27 @@
         --sidebar-nav-link-before-content: '-';
         --sidebar-nav-link-padding: 0.25em 0 0.25em 0;
         --sidebar-nav-pagelink-padding: 0.25em 0 0.25em 0;
+        --sidebar-nav-margin: 0;
+        --sidebar-background: none;
+        --search-input-margin: 0;
+        --search-input-border-width: 1px;
+        --search-input-border-radius: 5px;
       }
 
-      li::marker {
-        display: none;
-      }
+      ul > li > p > a::before {
+          content: var(
+            --sidebar-nav-link-before-content-l3,
+            var(--sidebar-nav-link-before-content)
+          );
+          margin: var(
+            --sidebar-nav-link-before-margin-l3,
+            var(--sidebar-nav-link-before-margin)
+          );
+          color: var(
+            --sidebar-nav-link-before-color-l3,
+            var(--sidebar-nav-link-before-color)
+          );
+        }
 
       pre::after {
         display: none;
