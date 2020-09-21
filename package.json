@@ -25,7 +25,7 @@
     "prestart": "npm run scrape",
     "start": "docsify start docs",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "scrape": "rm -rf docs/public-documentation && ts-node index.ts"
+    "scrape": "rm -rf docs/public-documentation docs/_sidebar.md && ts-node index.ts"
   },
   "keywords": [
     "docsify",
