@@ -1,111 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Muze Documentation</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="description" content="Description" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
-    />
-    <link
-      href="//fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="//cdn.jsdelivr.net/npm/docsify-themeable@0.8.1/dist/css/theme-simple.css"
-    />
-    <style>
-      :root {
-        --sidebar-toggle-offset-top: 60px;
-        --sidebar-width: 29rem;
-        --navbar-root-color: #5f5d5d;
-        --content-max-width: 90%;
-        --base-font-family: Source Sans Pro -apple-system, BlinkMacSystemFont,
-          'Segoe UI', Helvetica, 'Apple Color Emoji', Arial, sans-serif,
-          'Segoe UI Emoji', 'Segoe UI Symbol';
-        --heading-h1-font-weight: 700;
-        --heading-h2-font-weight: 600;
-        --heading-h3-font-weight: 600;
-        --strong-font-weight: 700;
-        --sidebar-nav-link-background-image: none;
-        --sidebar-nav-pagelink-background-image: none;
-        --sidebar-nav-link-before-content: '-';
-        --sidebar-nav-link-padding: 0.25em 0 0.25em 0;
-        --sidebar-nav-pagelink-padding: 0.25em 0 0.25em 0;
-        --sidebar-nav-margin: 0;
-        --sidebar-background: none;
-        --search-input-margin: 0;
-        --search-input-border-width: 1px;
-        --search-input-border-radius: 5px;
-      }
 
-      ul > li > p > a::before {
-          content: var(
-            --sidebar-nav-link-before-content-l3,
-            var(--sidebar-nav-link-before-content)
-          );
-          margin: var(
-            --sidebar-nav-link-before-margin-l3,
-            var(--sidebar-nav-link-before-margin)
-          );
-          color: var(
-            --sidebar-nav-link-before-color-l3,
-            var(--sidebar-nav-link-before-color)
-          );
-        }
+<head>
+  <meta charset="UTF-8" />
+  <title>Muze Documentation</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="Description" />
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+  <link
+    href="//fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-themeable@0.8.1/dist/css/theme-simple.css" />
+  <style>
+    :root {
+      --sidebar-toggle-offset-top: 60px;
+      --sidebar-width: 22rem;
+      --navbar-root-color: #5f5d5d;
+      --content-max-width: 90%;
+      --base-font-family: Source Sans Pro -apple-system, BlinkMacSystemFont,
+        'Segoe UI', Helvetica, 'Apple Color Emoji', Arial, sans-serif,
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+      --heading-h1-font-weight: 700;
+      --heading-h2-font-weight: 600;
+      --heading-h3-font-weight: 600;
+      --strong-font-weight: 700;
+      --sidebar-nav-link-background-image: none;
+      --sidebar-nav-pagelink-background-image: none;
+      --sidebar-nav-link-before-content: '-';
+      --sidebar-nav-link-padding: 0.25em 0 0.25em 0;
+      --sidebar-nav-pagelink-padding: 0.25em 0 0.25em 0;
+      --sidebar-nav-margin: 0;
+      --sidebar-background: none;
+      --search-input-margin: 0;
+      --search-input-border-width: 1px;
+      --search-input-border-radius: 5px;
+      --toc-width: 130px;
+    }
 
-      pre::after {
-        display: none;
-      }
+    ul>li>p>a::before {
+      content: var(--sidebar-nav-link-before-content-l3,
+          var(--sidebar-nav-link-before-content));
+      margin: var(--sidebar-nav-link-before-margin-l3,
+          var(--sidebar-nav-link-before-margin));
+      color: var(--sidebar-nav-link-before-color-l3,
+          var(--sidebar-nav-link-before-color));
+    }
 
-      .sidebar-nav p {
-        font-weight: 600;
-        text-transform: uppercase;
-      }
+    pre::after {
+      display: none;
+    }
 
-      .sidebar-nav p > a {
-        text-transform: initial;
-      }
+    .sidebar-nav p {
+      font-weight: 600;
+      text-transform: uppercase;
+    }
 
+    .sidebar-nav p>a {
+      text-transform: initial;
+    }
+
+    .nav {
+      font-size: 0.9em;
+    }
+
+    div.page_toc {
+      padding-right: 15px;
+    }
+
+    .markdown-section {
+      min-width: 275px;
+      margin: 0px 15px;
+    }
+
+    .sidebar {
+      font-size: 13px;
+    }
+
+    .page_toc {
+      font-size: 11px;
+    }
+
+    @media screen and (max-width: 1300px) {
       .nav {
-        font-size: 0.9em;
+        padding-left: 45px;
+        padding-top: 1.5rem;
+        max-width: 90%;
       }
+    }
+  </style>
+</head>
 
-      div.page_toc {
-        padding-right: 15px;
-      }
+<body>
+  <div id="app"></div>
+  <script>
+    window.$docsify = {
+      loadSidebar: true,
+      auto2top: true,
+      homepage: 'public-documentation/introduction.md',
+      mergeNavbar: true,
+    };
+  </script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4.11.6/lib/docsify.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1.21.0/components/prism-jsx.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4.11.6/lib/plugins/search.min.js"></script>
+  <script
+    src="//cdn.jsdelivr.net/npm/docsify-plugin-flexible-alerts@1.0.4/dist/docsify-plugin-flexible-alerts.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-themeable@0.8.1/dist/js/docsify-themeable.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-page-toc@1.0.4/dist/docsify-page-toc.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+</body>
 
-      .markdown-section {
-        min-width: 275px;
-      }
-
-      @media screen and (max-width: 1300px) {
-        .nav {
-          padding-left: 45px;
-          padding-top: 1.5rem;
-          max-width: 90%;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script>
-      window.$docsify = {
-        loadSidebar: true,
-        auto2top: true,
-        homepage: 'public-documentation/introduction.md',
-        mergeNavbar: true,
-      };
-    </script>
-    <script src="//cdn.jsdelivr.net/npm/docsify@4.11.6/lib/docsify.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1.21.0/components/prism-jsx.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/docsify@4.11.6/lib/plugins/search.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/docsify-plugin-flexible-alerts@1.0.4/dist/docsify-plugin-flexible-alerts.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/docsify-themeable@0.8.1/dist/js/docsify-themeable.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/docsify-page-toc@1.0.4/dist/docsify-page-toc.js"></script>
-  </body>
 </html>
