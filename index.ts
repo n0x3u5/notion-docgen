@@ -60,10 +60,10 @@ const sidebarFile = resolve(outDir, '_sidebar.md');
 
 const trimLastWord = (s: string) => s.split(' ').slice(0, -1).join(' ');
 
-const groupByIsToCItem = (
+function groupByIsToCItem(
   files: Item[],
   contentfulSubDirsContents: DirectoryContent[]
-) => {
+) {
   return files.reduce<ItemsGroupedByIsToC>(
     (acc, item) => {
       const x = contentfulSubDirsContents.find((contentfulSubDirContents) =>
@@ -80,7 +80,7 @@ const groupByIsToCItem = (
     },
     { tocItems: [], nonToCItems: [] }
   );
-};
+}
 
 async function readDir(absoluteDirPath: string) {
   const barePaths = await readdir(absoluteDirPath);
@@ -191,6 +191,19 @@ function ensureFiles(files: string[]) {
   );
 }
 
+function isPen(p: string) {
+  return (
+    p.includes('/pen/') ||
+    p.includes('/details/') ||
+    p.includes('/full/') ||
+    p.includes('/debug/') ||
+    p.includes('/live/') ||
+    p.includes('/collab/') ||
+    p.includes('/professor/') ||
+    p.includes('/pres/')
+  );
+}
+
 async function scrape(srcDirectory: string): Promise<Ret> {
   const dirItems = await readDir(srcDirectory);
 
@@ -249,7 +262,7 @@ async function scrape(srcDirectory: string): Promise<Ret> {
       } else if (node.type === 'link' && typeof node.url === 'string') {
         try {
           const { hostname, pathname } = new URL(node.url);
-          if (hostname === 'codepen.io' && pathname.includes('/pen/')) {
+          if (hostname === 'codepen.io' && isPen(pathname)) {
             const pathnameTokens = pathname.split('/').slice(1);
 
             return html(
