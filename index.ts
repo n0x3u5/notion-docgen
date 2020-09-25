@@ -50,7 +50,7 @@ interface DirectoryContent {
 
 interface Ret {
   docFileMap: [string, string][];
-  toc?: [string, Parent][];
+  toc: [string, Parent][];
 }
 
 const DOCS_ROOT_NAME = 'public-documentation';
@@ -292,14 +292,13 @@ async function scrape(srcDirectory: string): Promise<Ret> {
 
   if (subDirs.length === 0) {
     return {
+      toc: [],
       docFileMap: nonToCMarkdownFileMapEntries,
     };
   } else {
     const rets = await Promise.all(subDirs.map(({ path }) => scrape(path)));
 
-    const x = rets
-      .map(({ toc }) => toc)
-      .filter((ret): ret is [string, Parent][] => ret != null);
+    const x = rets.map(({ toc }) => toc);
 
     const curDirToCs = tocItemContents.map(({ path, content }) => {
       let tocHeading: string = '';
