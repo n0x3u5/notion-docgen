@@ -19,8 +19,8 @@
     />
     <style>
       :root {
-        --sidebar-toggle-offset-top: 60px;
-        --sidebar-width: 22rem;
+        --sidebar-toggle-offset-top: 50px;
+        --sidebar-width: 20rem;
         --navbar-root-color: #5f5d5d;
         --content-max-width: 90%;
         --base-font-family: Source Sans Pro -apple-system, BlinkMacSystemFont,
@@ -40,7 +40,7 @@
         --search-input-margin: 0;
         --search-input-border-width: 1px;
         --search-input-border-radius: 5px;
-        --toc-width: 130px;
+        --text-color-tertiary: var(--sidebar-nav-link-color--active);
       }
 
       ul > li > p > a::before {
@@ -58,6 +58,10 @@
         );
       }
 
+      .sidebar-nav a, .sidebar nav a {
+        white-space: normal;
+      }
+
       pre::after {
         display: none;
       }
@@ -71,7 +75,7 @@
         text-transform: initial;
       }
 
-      .nav {
+      aside.nav {
         font-size: 0.9em;
       }
 
@@ -79,24 +83,25 @@
         padding-right: 15px;
       }
 
-      .markdown-section {
+      article.markdown-section {
         min-width: 275px;
-        margin: 0px 15px;
-      }
-
-      .sidebar {
-        font-size: 13px;
-      }
-
-      .page_toc {
-        font-size: 11px;
+        padding-right: 0;
+        padding-left: 10px;
+        margin-right: 10px;
       }
 
       @media screen and (max-width: 1300px) {
-        .nav {
-          padding-left: 45px;
+        aside.nav {
           padding-top: 1.5rem;
+          padding-left: 10px;
+          margin-right: 10px;
           max-width: 90%;
+          width: 100%;
+        }
+
+        article.markdown-section {
+          padding-top: 0;
+          margin-top: -20px;
         }
       }
     </style>
