@@ -40,8 +40,10 @@
           'Segoe UI', Helvetica, 'Apple Color Emoji', Arial, sans-serif,
           'Segoe UI Emoji', 'Segoe UI Symbol';
         --heading-h1-font-weight: 700;
-        --heading-h2-font-weight: 600;
-        --heading-h3-font-weight: 600;
+        --heading-h2-font-weight: 500;
+        --heading-h3-font-weight: 400;
+        --heading-h2-margin: 0.9rem 0 0.5rem;
+        --heading-h2-padding: 0 0 0.5rem 0;
         --strong-font-weight: 700;
         --sidebar-nav-margin: 0;
         --sidebar-background: none;
@@ -100,6 +102,23 @@
           margin-top: -20px;
         }
       }
+
+      article.markdown-section h2 a{
+        border-bottom: none;
+        text-decoration:none;
+      }
+      
+      article.markdown-section h2 {
+        border-bottom: none;
+      }
+
+      aside.nav {
+       font-size: 0.7rem;
+      }
+
+      aside.sidebar {
+        font-size: 0.8rem !important;
+      }
     </style>
   </head>
 
@@ -110,6 +129,8 @@
         loadSidebar: true,
         auto2top: true,
         homepage: 'public-documentation/introduction.md',
+        // basePath:"/docsify-content/wa/latest/",
+        mergeNavbar: true,
       };
     </script>
     <script src="//cdn.jsdelivr.net/npm/docsify@4.11.6/lib/docsify.min.js"></script>
