@@ -338,7 +338,6 @@ async function scrape(srcDirectory: string): Promise<Ret> {
           heading,
           list(
             'unordered',
-            false,
             entries.map(({ url, value }) => {
               const { name } = parse(url);
               const href = normalizePath(barePath + sep + decodeURI(name));
@@ -346,16 +345,21 @@ async function scrape(srcDirectory: string): Promise<Ret> {
               if (x[i]) {
                 const j = x[i].findIndex(([s]) => s === value);
                 if (x[i][j]) {
-                  return listItem(false, [paragraph([text(value)]), x[i][j][1]]);
+                  return listItem(
+                    [
+                      paragraph([strong(text(value.toUpperCase()))]),
+                      x[i][j][1],
+                    ]
+                  );
                 } else {
-                  return listItem(false, [
-                    paragraph([link(href, undefined, [text(value)])]),
-                  ]);
+                  return listItem(
+                    [paragraph([link(href, undefined, [text(value)])])]
+                  );
                 }
               } else {
-                return listItem(false, [
-                  paragraph([link(href, undefined, [text(value)])]),
-                ]);
+                return listItem(
+                  [paragraph([link(href, undefined, [text(value)])])]
+                );
               }
             })
           ),
