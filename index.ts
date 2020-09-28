@@ -9,6 +9,7 @@ import remark from 'remark';
 import toc from 'mdast-util-toc';
 import map from 'unist-util-map';
 import visit from 'unist-util-visit';
+import { select } from 'unist-util-select';
 import {
   html,
   image,
@@ -347,21 +348,31 @@ async function scrape(srcDirectory: string): Promise<Ret> {
                 if (x[i][j]) {
                   return listItem(
                     [
-                      paragraph([strong(text(value.toUpperCase()))]),
+                      paragraph([
+                        link(
+                          (select('link', x[i][j][1])?.url as string) ?? '',
+                          undefined,
+                          strong(text(value.toUpperCase()))
+                        ),
+                      ]),
                       x[i][j][1],
-                    ]
+                    ],
+                    false
                   );
                 } else {
                   return listItem(
-                    [paragraph([link(href, undefined, [text(value)])])]
+                    [paragraph([link(href, undefined, [text(value)])])],
+                    false
                   );
                 }
               } else {
                 return listItem(
-                  [paragraph([link(href, undefined, [text(value)])])]
+                  [paragraph([link(href, undefined, [text(value)])])],
+                  false
                 );
               }
-            })
+            }),
+            false
           ),
         ];
       }
