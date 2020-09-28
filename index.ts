@@ -345,16 +345,21 @@ async function scrape(srcDirectory: string): Promise<Ret> {
               if (x[i]) {
                 const j = x[i].findIndex(([s]) => s === value);
                 if (x[i][j]) {
-                  return listItem([paragraph([text(value)]), x[i][j][1]]);
+                  return listItem(
+                    [
+                      paragraph([strong(text(value.toUpperCase()))]),
+                      x[i][j][1],
+                    ]
+                  );
                 } else {
-                  return listItem([
-                    paragraph([link(href, undefined, [text(value)])]),
-                  ]);
+                  return listItem(
+                    [paragraph([link(href, undefined, [text(value)])])]
+                  );
                 }
               } else {
-                return listItem([
-                  paragraph([link(href, undefined, [text(value)])]),
-                ]);
+                return listItem(
+                  [paragraph([link(href, undefined, [text(value)])])]
+                );
               }
             })
           ),
