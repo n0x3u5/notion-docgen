@@ -19,19 +19,6 @@
     />
     <style>
       :root {
-        --sidebar-nav-link-before-content: ;
-        --sidebar-nav-link-before-content-l1: ;
-        --sidebar-nav-link-before-content-l2: ;
-        --sidebar-nav-link-before-content-l3: ;
-        --sidebar-nav-link-before-content-l4: ;
-        --sidebar-nav-link-color--active: #114794;
-        --sidebar-nav-strong-margin: 1em -25px 0.75em 0;
-        --sidebar-nav-link-background-repeat: no-repeat;
-        --sidebar-nav-pagelink-background-position: 3px 0.8rem;
-        --sidebar-nav-pagelink-background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='11.2' viewBox='0 0 7 11.2'%3E%3Cpath d='M1.5 5.6l4 0' stroke-width='1.5' stroke='rgb%28179, 179, 179%29' fill='none' stroke-linecap='square' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
-        --sidebar-nav-link-background-image: var(--sidebar-nav-pagelink-background-image);
-        --sidebar-nav-link-background-position: var(--sidebar-nav-pagelink-background-position);
-        --sidebar-nav-link-padding: var(--sidebar-nav-pagelink-padding);
         --sidebar-toggle-offset-top: 50px;
         --sidebar-width: 20rem;
         --navbar-root-color: #5f5d5d;
@@ -40,38 +27,43 @@
           'Segoe UI', Helvetica, 'Apple Color Emoji', Arial, sans-serif,
           'Segoe UI Emoji', 'Segoe UI Symbol';
         --heading-h1-font-weight: 700;
-        --heading-h2-font-weight: 600;
-        --heading-h3-font-weight: 600;
+        --heading-h2-font-weight: 500;
+        --heading-h3-font-weight: 400;
         --strong-font-weight: 700;
+        --sidebar-nav-link-background-image: none;
+        --sidebar-nav-pagelink-background-image: none;
+        --sidebar-nav-link-before-content: '-';
+        --sidebar-nav-link-padding: 0.25em 0 0.25em 0;
+        --sidebar-nav-pagelink-padding: 0.25em 0 0.25em 0;
+        --sidebar-nav-pagelink-background-position: 3px 0.8rem;
         --sidebar-nav-margin: 0;
         --sidebar-background: none;
         --search-input-margin: 0;
         --search-input-border-width: 1px;
         --search-input-border-radius: 5px;
         --text-color-tertiary: var(--sidebar-nav-link-color--active);
+        --heading-h2-margin: 0.9rem 0 0.5rem;
+        --heading-h2-padding: 0 0 0.5rem 0;
       }
 
-      .sidebar p {
-        margin: 0.25rem;
+      ul > li > p > a::before {
+        content: var(
+          --sidebar-nav-link-before-content-l3,
+          var(--sidebar-nav-link-before-content)
+        );
+        margin: var(
+          --sidebar-nav-link-before-margin-l3,
+          var(--sidebar-nav-link-before-margin)
+        );
+        color: var(
+          --sidebar-nav-link-before-color-l3,
+          var(--sidebar-nav-link-before-color)
+        );
       }
 
-      .sidebar-nav a,
-      .sidebar nav a {
+      .sidebar-nav a, .sidebar nav a {
         white-space: normal;
       }
-
-      pre::after {
-        display: none;
-      }
-
-      aside.nav {
-        font-size: 0.9em;
-      }
-
-      div.page_toc {
-        padding-right: 15px;
-      }
-
       div.page_toc div{
         background-image: var(--sidebar-nav-pagelink-background-image);
         background-repeat: var(--sidebar-nav-link-background-repeat);
@@ -79,11 +71,42 @@
         padding: 0 0 0 15px;
       }
 
+      pre::after {
+        display: none;
+      }
+
+      .sidebar-nav p {
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .sidebar-nav p > a {
+        text-transform: initial;
+      }
+
+      aside.nav {
+        font-size: 0.7rem;
+      }
+      aside.sidebar {
+        font-size: 0.8rem !important;
+      }
+
+      div.page_toc {
+        padding-right: 15px;
+      }
+
       article.markdown-section {
         min-width: 275px;
         padding-right: 0;
         padding-left: 10px;
         margin-right: 10px;
+      }
+      article.markdown-section h2 {
+        border-bottom: none;
+      }
+      article.markdown-section h2 a{
+        border-bottom: none;
+        text-decoration:none;
       }
 
       @media screen and (max-width: 1300px) {
@@ -110,6 +133,8 @@
         loadSidebar: true,
         auto2top: true,
         homepage: 'public-documentation/introduction.md',
+        basePath:"/docsify-content/wa/latest/",
+        mergeNavbar: true,
       };
     </script>
     <script src="//cdn.jsdelivr.net/npm/docsify@4.11.6/lib/docsify.min.js"></script>
@@ -118,6 +143,6 @@
     <script src="//cdn.jsdelivr.net/npm/docsify-plugin-flexible-alerts@1.0.4/dist/docsify-plugin-flexible-alerts.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/docsify-themeable@0.8.1/dist/js/docsify-themeable.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/docsify-page-toc@1.0.4/dist/docsify-page-toc.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/docsify-pagination@2.6.0/dist/docsify-pagination.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
   </body>
 </html>
