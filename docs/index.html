@@ -27,7 +27,7 @@
         --sidebar-nav-link-color--active: #114794;
         --sidebar-nav-strong-margin: 1em -25px 0.75em 0;
         --sidebar-nav-link-background-repeat: no-repeat;
-        --sidebar-nav-pagelink-background-position: 3px 0.8rem;
+        --sidebar-nav-pagelink-background-position: 3px 0.8em;
         --sidebar-nav-pagelink-background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='11.2' viewBox='0 0 7 11.2'%3E%3Cpath d='M1.5 5.6l4 0' stroke-width='1.5' stroke='rgb%28179, 179, 179%29' fill='none' stroke-linecap='square' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
         --sidebar-nav-link-background-image: var(
           --sidebar-nav-pagelink-background-image
@@ -44,8 +44,10 @@
           'Segoe UI', Helvetica, 'Apple Color Emoji', Arial, sans-serif,
           'Segoe UI Emoji', 'Segoe UI Symbol';
         --heading-h1-font-weight: 700;
-        --heading-h2-font-weight: 600;
-        --heading-h3-font-weight: 600;
+        --heading-h2-font-weight: 500;
+        --heading-h3-font-weight: 400;
+        --heading-h2-margin: 0.9rem 0 0.5rem;
+        --heading-h2-padding: 0 0 0.5rem 0;
         --strong-font-weight: 700;
         --sidebar-nav-margin: 0;
         --sidebar-background: none;
@@ -57,6 +59,7 @@
 
       .sidebar {
         height: unset;
+        font-size: 0.8rem;
       }
 
       .sidebar p {
@@ -72,11 +75,8 @@
         display: none;
       }
 
-      aside.nav {
-        font-size: 0.9em;
-      }
-
       div.page_toc {
+        font-size: 0.8rem;
         padding-right: 15px;
       }
 
@@ -92,6 +92,15 @@
         padding-right: 0;
         padding-left: 10px;
         margin-right: 10px;
+      }
+
+      article.markdown-section h2 {
+        border-bottom: none;
+      }
+
+      article.markdown-section h2 a {
+        border-bottom: none;
+        text-decoration: none;
       }
 
       footer {
@@ -145,17 +154,21 @@
       }
 
       @media screen and (max-width: 1300px) {
+        div.page_toc a::before {
+          content: none;
+        }
+
+        article.markdown-section {
+          padding-top: 0;
+          margin-top: -20px;
+        }
+
         aside.nav {
           padding-top: 1.5rem;
           padding-left: 10px;
           margin-right: 10px;
           max-width: 90%;
           width: 100%;
-        }
-
-        article.markdown-section {
-          padding-top: 0;
-          margin-top: -20px;
         }
       }
     </style>
