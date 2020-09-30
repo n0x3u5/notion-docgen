@@ -27,7 +27,7 @@
     "prestart": "npm run scrape",
     "start": "docsify start docs",
     "scrape": "rm -rf docs/public-documentation docs/_sidebar.md && ts-node index.ts",
-    "build": "rm -rf index.js && tsc"
+    "build": "rm -rf index.js && tsc && sed -i \"s/ts-node-script/node/\" index.js"
   },
   "keywords": [
     "docsify",

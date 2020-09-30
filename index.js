@@ -1,4 +1,4 @@
-#!/usr/bin/env ts-node-script
+#!/usr/bin/env node
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -15,16 +15,10 @@ const unist_util_visit_1 = __importDefault(require("unist-util-visit"));
 const mdast_builder_1 = require("mdast-builder");
 const process_1 = require("process");
 const yargs_parser_1 = __importDefault(require("yargs-parser"));
-const { sourceDir, outDir } = (() => {
-    const yargv = yargs_parser_1.default(process_1.argv);
-    const sourceDir = path_1.resolve(typeof yargv.src === 'string' ? yargv.src : 'notion-md-export');
-    const outDir = path_1.resolve(typeof yargv.out === 'string' ? yargv.out : 'docs');
-    return {
-        sourceDir,
-        outDir,
-    };
-})();
 const DOCS_ROOT_NAME = 'public-documentation';
+const yargv = yargs_parser_1.default(process_1.argv);
+const sourceDir = path_1.resolve(typeof yargv.src === 'string' ? yargv.src : 'notion-md-export');
+const outDir = path_1.resolve(typeof yargv.out === 'string' ? yargv.out : 'docs');
 const sidebarFile = path_1.resolve(outDir, '_sidebar.md');
 const trimLastWord = (s) => s.split(' ').slice(0, -1).join(' ');
 function groupByIsToCItem(files, contentfulSubDirsContents) {
