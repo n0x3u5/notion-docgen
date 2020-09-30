@@ -22,6 +22,8 @@ import {
   link,
 } from 'mdast-builder';
 import { Parent } from 'unist';
+import { argv } from 'process';
+import yargsParser from 'yargs-parser';
 
 interface Item {
   path: string;
@@ -54,8 +56,13 @@ interface Ret {
 }
 
 const DOCS_ROOT_NAME = 'public-documentation';
-const sourceDir = resolve('notion-md-export');
-const outDir = resolve('docs');
+
+const yargv = yargsParser(argv);
+
+const sourceDir = resolve(
+  typeof yargv.src === 'string' ? yargv.src : 'notion-md-export'
+);
+const outDir = resolve(typeof yargv.out === 'string' ? yargv.out : 'docs');
 const sidebarFile = resolve(outDir, '_sidebar.md');
 
 const trimLastWord = (s: string) => s.split(' ').slice(0, -1).join(' ');
@@ -345,21 +352,19 @@ async function scrape(srcDirectory: string): Promise<Ret> {
               if (x[i]) {
                 const j = x[i].findIndex(([s]) => s === value);
                 if (x[i][j]) {
-                  return listItem(
-                    [
-                      paragraph([strong(text(value.toUpperCase()))]),
-                      x[i][j][1],
-                    ]
-                  );
+                  return listItem([
+                    paragraph([strong(text(value.toUpperCase()))]),
+                    x[i][j][1],
+                  ]);
                 } else {
-                  return listItem(
-                    [paragraph([link(href, undefined, [text(value)])])]
-                  );
+                  return listItem([
+                    paragraph([link(href, undefined, [text(value)])]),
+                  ]);
                 }
               } else {
-                return listItem(
-                  [paragraph([link(href, undefined, [text(value)])])]
-                );
+                return listItem([
+                  paragraph([link(href, undefined, [text(value)])]),
+                ]);
               }
             })
           ),

@@ -2,7 +2,7 @@
   "name": "notion-docgen",
   "version": "0.0.1",
   "description": "Generate docsify compatible markdown from Notion exported markdown",
-  "main": "index.js",
+  "bin": "index.js",
   "directories": {
     "doc": "docs"
   },
@@ -13,10 +13,12 @@
     "remark": "^12.0.1",
     "slugify": "^1.4.5",
     "unist-util-map": "^2.0.1",
-    "unist-util-visit": "^2.0.3"
+    "unist-util-visit": "^2.0.3",
+    "yargs-parser": "^20.2.0"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.1",
+    "@types/yargs-parser": "^15.0.0",
     "docsify-cli": "^4.4.1",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
@@ -24,8 +26,8 @@
   "scripts": {
     "prestart": "npm run scrape",
     "start": "docsify start docs",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "scrape": "rm -rf docs/public-documentation docs/_sidebar.md && ts-node index.ts"
+    "scrape": "rm -rf docs/public-documentation docs/_sidebar.md && ts-node index.ts",
+    "build": "rm -rf index.js && tsc"
   },
   "keywords": [
     "docsify",
