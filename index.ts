@@ -3,7 +3,15 @@
 import { stat, readdir, readFile, writeFile, ensureFile, copy } from 'fs-extra';
 import type { Stats } from 'fs-extra';
 import { URL } from 'url';
-import { resolve, extname, basename, sep, parse, relative } from 'path';
+import {
+  resolve,
+  extname,
+  basename,
+  sep,
+  parse,
+  relative,
+  dirname,
+} from 'path';
 import slugify from 'slugify';
 import remark from 'remark';
 import toc from 'mdast-util-toc';
@@ -21,7 +29,7 @@ import {
   root,
   link,
 } from 'mdast-builder';
-import { Parent } from 'unist';
+import { Parent, Node } from 'unist';
 import { argv } from 'process';
 import yargsParser from 'yargs-parser';
 
@@ -209,6 +217,35 @@ function isPen(p: string) {
     p.includes('/professor/') ||
     p.includes('/pres/')
   );
+}
+
+function getLinkText(linkNode: Node) {
+  let linkText = '';
+
+  visit(linkNode, 'text', ({ value }) => {
+    if (typeof value === 'string') linkText = value;
+  });
+
+  return linkText;
+}
+
+function toAbsolute(relativePath: string, absoluteDirPath: string) {
+  const absoluteDirPathParts = dirname(absoluteDirPath).split(sep);
+  const relativePathParts = relativePath.split(sep);
+
+  let dblDotCount = 0;
+
+  relativePathParts.every((part) => {
+    const isDblDot = part == '..';
+
+    if (isDblDot) dblDotCount++;
+
+    return isDblDot;
+  });
+
+  return absoluteDirPathParts
+    .concat(relativePathParts.slice(dblDotCount))
+    .join(sep);
 }
 
 async function scrape(srcDirectory: string): Promise<Ret> {
@@ -409,23 +446,35 @@ async function scrape(srcDirectory: string): Promise<Ret> {
             hostname.includes('notion.so') &&
             fileHashMap[pathnameParts[pathnameParts.length - 1]]
           ) {
-            let linkText = '';
-
-            visit(node, 'text', (node) => {
-              if (typeof node.value === 'string') linkText = node.value;
-            });
-
             return link(
               fileHashMap[pathnameParts[pathnameParts.length - 1]].substring(
                 outDir.length + 1
               ),
-              linkText
+              getLinkText(node)
             );
           } else {
             return node;
           }
         } catch {
-          return node;
+          if (extname(node.url) === '.md') {
+            const normalizedRelativePath = decodeURI(node.url)
+              .split(sep)
+              .map((part, idx, arr) => {
+                if (part === '..' || part === '.') {
+                  return part;
+                } else {
+                  return normalizePathToken(part, idx, arr);
+                }
+              })
+              .join(sep);
+
+            return link(
+              toAbsolute(normalizedRelativePath, path).substr(outDir.length),
+              getLinkText(node)
+            );
+          } else {
+            return node;
+          }
         }
       } else {
         return node;

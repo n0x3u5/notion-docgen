@@ -246,26 +246,27 @@
       </div>
     </footer>
     <script>
+      // All JS MUST BE IE11 compatible
       window.$docsify = {
         loadSidebar: true,
         auto2top: true,
         homepage: 'public-documentation/introduction.md',
         plugins: [
-          (hook) => {
-            hook.ready(() => {
+          function (hook) {
+            hook.ready(function () {
               const footer = document.getElementsByTagName('footer')[0];
               const sidebar = document.getElementsByClassName('sidebar')[0];
 
               sidebar.style.transitionProperty = 'none';
 
-              const handler = () => {
+              const handler = function () {
                 const viewportHeight = window.innerHeight;
-                const { top } = footer.getBoundingClientRect();
+                const footerBounds = footer.getBoundingClientRect();
 
-                const offset = top - viewportHeight;
+                const offset = footerBounds.top - viewportHeight;
 
                 if (offset < 0) {
-                  sidebar.style.bottom = `${-offset}px`;
+                  sidebar.style.bottom = -offset + 'px';
                 } else {
                   if (parseFloat(getComputedStyle(sidebar).bottom) != 0) {
                     sidebar.style.bottom = '0px';
