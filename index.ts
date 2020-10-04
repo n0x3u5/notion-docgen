@@ -32,6 +32,7 @@ import {
 import { Parent, Node } from 'unist';
 import { argv } from 'process';
 import yargsParser from 'yargs-parser';
+import { createLogger, transports, format } from 'winston';
 
 interface Item {
   path: string;
@@ -64,6 +65,8 @@ interface Ret {
 }
 
 const DOCS_ROOT_NAME = 'public-documentation';
+const WARNING_SEPARATOR =
+  '=====================================================================';
 
 const yargv = yargsParser(argv);
 
@@ -72,6 +75,15 @@ const sourceDir = resolve(
 );
 const outDir = resolve(typeof yargv.out === 'string' ? yargv.out : 'docs');
 const sidebarFile = resolve(outDir, '_sidebar.md');
+
+const logger = createLogger({
+  format: format.combine(
+    format.errors({ stack: true }),
+    format.colorize(),
+    format.simple()
+  ),
+  transports: new transports.Console(),
+});
 
 const trimLastWord = (s: string) => s.split(' ').slice(0, -1).join(' ');
 
@@ -284,6 +296,7 @@ async function scrape(srcDirectory: string): Promise<Ret> {
     const r = remark();
 
     const tree = r.parse(content);
+    const outPath = resolve(outDir, normalizePath(path));
 
     const t = map(tree, (node) => {
       if (
@@ -292,6 +305,12 @@ async function scrape(srcDirectory: string): Promise<Ret> {
         node.value.toLowerCase().includes('table of content')
       ) {
         const tocTree = toc(tree, { tight: true });
+
+        logger.warn(
+          `File: ${outPath}:${node.position?.start?.line}:${node.position?.start?.column}`
+        );
+        logger.warn('A stray "Table of Contents" string was found. Check the Notion page for the file above.');
+        logger.warn(WARNING_SEPARATOR);
 
         return tocTree.map == null
           ? node
@@ -323,7 +342,7 @@ async function scrape(srcDirectory: string): Promise<Ret> {
       }
     });
 
-    writeFile(resolve(outDir, normalizePath(path)), r.stringify(t));
+    writeFile(outPath, r.stringify(t));
   });
 
   const nonToCMarkdownFileMapEntries = nonToCMarkdownItems.map(({ path }): [
@@ -442,16 +461,27 @@ async function scrape(srcDirectory: string): Promise<Ret> {
           const { hostname, pathname } = new URL(node.url);
           const pathnameParts = pathname.split('/');
 
-          if (
-            hostname.includes('notion.so') &&
-            fileHashMap[pathnameParts[pathnameParts.length - 1]]
-          ) {
-            return link(
-              fileHashMap[pathnameParts[pathnameParts.length - 1]].substring(
-                outDir.length + 1
-              ),
-              getLinkText(node)
-            );
+          if (hostname.includes('notion.so')) {
+            if (fileHashMap[pathnameParts[pathnameParts.length - 1]]) {
+              return link(
+                fileHashMap[pathnameParts[pathnameParts.length - 1]].substring(
+                  outDir.length + 1
+                ),
+                getLinkText(node)
+              );
+            } else {
+              logger.warn(
+                `File: ${path}:${node.position?.start?.line}:${node.position?.start?.column}`
+              );
+              logger.warn(
+                `No matching local file found for link with the URL "${
+                  node.url
+                }" and text "${getLinkText(node)}". Check the Notion page for the file above.`
+              );
+              logger.warn(WARNING_SEPARATOR);
+
+              return node;
+            }
           } else {
             return node;
           }
@@ -473,6 +503,28 @@ async function scrape(srcDirectory: string): Promise<Ret> {
               getLinkText(node)
             );
           } else {
+            const linkText = getLinkText(node);
+
+            if (node.url === '' || linkText === '') {
+              logger.warn(
+                `File: ${path}:${node.position?.start?.line}:${node.position?.start?.column}`
+              );
+              if (node.url === '' && linkText === '') {
+                logger.warn(
+                  'Both the URL and the text of a link was found to be blank. Check the Notion page for the file above.'
+                );
+              } else if (node.url === '') {
+                logger.warn(
+                  `The URL of a link with text "${linkText}" was found to be blank. Check the Notion page for the file above.`
+                );
+              } else if (linkText === '') {
+                logger.warn(
+                  `The text of a link with URL "${node.url}" was found to be blank. Check the Notion page for the file above.`
+                );
+              }
+              logger.warn(WARNING_SEPARATOR);
+            }
+
             return node;
           }
         }
