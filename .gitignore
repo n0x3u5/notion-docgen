@@ -2,6 +2,8 @@ docs/public-documentation
 docs/_sidebar.md
 
 notion-md-export/*
+!notion-md-export/docs
+notion-md-export/docs/*
 !.gitkeep
 
 ### Linux ###
