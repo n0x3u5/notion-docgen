@@ -1,5 +1,6 @@
 docs/public-documentation
 docs/_sidebar.md
+docs/examples.json
 
 notion-md-export/*
 !notion-md-export/docs
