@@ -16,12 +16,19 @@ const mdast_builder_1 = require("mdast-builder");
 const process_1 = require("process");
 const yargs_parser_1 = __importDefault(require("yargs-parser"));
 const winston_1 = require("winston");
+const unist_util_find_all_between_1 = __importDefault(require("unist-util-find-all-between"));
+const unist_util_select_1 = require("unist-util-select");
 const DOCS_ROOT_NAME = 'public-documentation';
 const WARNING_SEPARATOR = '=====================================================================';
 const yargv = yargs_parser_1.default(process_1.argv);
-const sourceDir = path_1.resolve(typeof yargv.src === 'string' ? yargv.src : 'notion-md-export');
+const sourceDir = path_1.resolve(typeof yargv.src === 'string' ? yargv.src : `notion-md-export${path_1.sep}docs`);
+const examplesSrcFile = path_1.resolve(typeof yargv.examples === 'string'
+    ? yargv.examples
+    : `notion-md-export${path_1.sep}examples.md`);
 const outDir = path_1.resolve(typeof yargv.out === 'string' ? yargv.out : 'docs');
+const examplesOutFile = `${outDir}${path_1.sep}examples.json`;
 const sidebarFile = path_1.resolve(outDir, '_sidebar.md');
+const doesExamplesFileExistP = fs_extra_1.pathExists(examplesSrcFile);
 const logger = winston_1.createLogger({
     format: winston_1.format.combine(winston_1.format.errors({ stack: true }), winston_1.format.colorize(), winston_1.format.simple()),
     transports: new winston_1.transports.Console(),
@@ -281,10 +288,46 @@ async function scrape(srcDirectory) {
     }
 }
 (async () => {
+    const doesExamplesFileExist = await doesExamplesFileExistP;
     const { toc: sideBarToC, docFileMap: filesMap } = await scrape(sourceDir);
     const fileHashMap = Object.fromEntries(filesMap);
     const fileContents = await readUTF8Files(filesMap.map(([_, filePath]) => filePath));
     const r = remark_1.default();
+    if (doesExamplesFileExist) {
+        const examplesFileContent = await fs_extra_1.readFile(examplesSrcFile, {
+            encoding: 'utf8',
+        });
+        const parsedExamplesFileContent = r.parse(examplesFileContent);
+        const xs = unist_util_select_1.selectAll('heading[depth=2]', parsedExamplesFileContent).reduce((acc, node, idx, arr) => {
+            if (idx === 0)
+                return acc;
+            acc.push([arr[idx - 1], node]);
+            return acc;
+        }, []);
+        const json = xs.flatMap(([start, end]) => {
+            let category = '';
+            const paragraphs = unist_util_find_all_between_1.default(parsedExamplesFileContent, start, end, 'paragraph');
+            unist_util_visit_1.default(start, 'text', (text) => {
+                if (typeof text.value === 'string')
+                    category = text.value;
+            });
+            return paragraphs.flatMap((paragraph) => {
+                let link = '';
+                unist_util_visit_1.default(paragraph, 'link', (linkNode) => {
+                    if (typeof linkNode.url === 'string')
+                        link = linkNode.url;
+                });
+                return { category, link: link };
+            });
+        });
+        fs_extra_1.writeJSON(examplesOutFile, json);
+    }
+    else {
+        logger.warn(`File: ${examplesSrcFile}`);
+        logger.warn('The markdown file containing the list of Muze examples could not be found. Is the above file correct?');
+        logger.info('Perhaps the "--examples" argument needs to be set correctly.');
+        logger.warn(WARNING_SEPARATOR);
+    }
     fileContents.forEach(({ content, path }) => {
         const t = unist_util_map_1.default(r.parse(content), (node) => {
             var _a, _b, _c, _d, _e, _f, _g, _h;
