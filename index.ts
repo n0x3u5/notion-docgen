@@ -1,6 +1,15 @@
 #!/usr/bin/env ts-node-script
 
-import { stat, readdir, readFile, writeFile, ensureFile, copy } from 'fs-extra';
+import {
+  stat,
+  readdir,
+  readFile,
+  writeFile,
+  ensureFile,
+  copy,
+  writeJSON,
+  pathExists,
+} from 'fs-extra';
 import type { Stats } from 'fs-extra';
 import { URL } from 'url';
 import {
@@ -33,6 +42,8 @@ import { Parent, Node } from 'unist';
 import { argv } from 'process';
 import yargsParser from 'yargs-parser';
 import { createLogger, transports, format } from 'winston';
+import findAllBetween from 'unist-util-find-all-between';
+import { selectAll } from 'unist-util-select';
 
 interface Item {
   path: string;
@@ -71,10 +82,18 @@ const WARNING_SEPARATOR =
 const yargv = yargsParser(argv);
 
 const sourceDir = resolve(
-  typeof yargv.src === 'string' ? yargv.src : 'notion-md-export'
+  typeof yargv.src === 'string' ? yargv.src : `notion-md-export${sep}docs`
+);
+const examplesSrcFile = resolve(
+  typeof yargv.examples === 'string'
+    ? yargv.examples
+    : `notion-md-export${sep}examples.md`
 );
 const outDir = resolve(typeof yargv.out === 'string' ? yargv.out : 'docs');
+const examplesOutFile = `${outDir}${sep}examples.json`;
 const sidebarFile = resolve(outDir, '_sidebar.md');
+
+const doesExamplesFileExistP = pathExists(examplesSrcFile);
 
 const logger = createLogger({
   format: format.combine(
@@ -309,7 +328,9 @@ async function scrape(srcDirectory: string): Promise<Ret> {
         logger.warn(
           `File: ${outPath}:${node.position?.start?.line}:${node.position?.start?.column}`
         );
-        logger.warn('A stray "Table of Contents" string was found. Check the Notion page for the file above.');
+        logger.warn(
+          'A stray "Table of Contents" string was found. Check the Notion page for the file above.'
+        );
         logger.warn(WARNING_SEPARATOR);
 
         return tocTree.map == null
@@ -444,6 +465,7 @@ async function scrape(srcDirectory: string): Promise<Ret> {
 }
 
 (async () => {
+  const doesExamplesFileExist = await doesExamplesFileExistP;
   const { toc: sideBarToC, docFileMap: filesMap } = await scrape(sourceDir);
 
   const fileHashMap = Object.fromEntries(filesMap);
@@ -453,6 +475,57 @@ async function scrape(srcDirectory: string): Promise<Ret> {
   );
 
   const r = remark();
+
+  if (doesExamplesFileExist) {
+    const examplesFileContent = await readFile(examplesSrcFile, {
+      encoding: 'utf8',
+    });
+
+    const parsedExamplesFileContent = r.parse(examplesFileContent);
+
+    const xs = selectAll('heading[depth=2]', parsedExamplesFileContent).reduce<
+      Node[][]
+    >((acc, node, idx, arr) => {
+      if (idx === 0) return acc;
+
+      acc.push([arr[idx - 1], node]);
+
+      return acc;
+    }, []);
+
+    const json = xs.flatMap(([start, end]) => {
+      let category = '';
+      const paragraphs = findAllBetween(
+        parsedExamplesFileContent as Parent,
+        start,
+        end,
+        'paragraph'
+      );
+
+      visit(start, 'text', (text) => {
+        if (typeof text.value === 'string') category = text.value;
+      });
+
+      return paragraphs.flatMap((paragraph) => {
+        let link: string = '';
+
+        visit(paragraph, 'link', (linkNode) => {
+          if (typeof linkNode.url === 'string') link = linkNode.url;
+        });
+
+        return { category, link: link };
+      });
+    });
+
+    writeJSON(examplesOutFile, json);
+  } else {
+    logger.warn(`File: ${examplesSrcFile}`);
+    logger.warn(
+      'The markdown file containing the list of Muze examples could not be found. Is the above file correct?'
+    );
+    logger.info('Perhaps the "--examples" argument needs to be set correctly.');
+    logger.warn(WARNING_SEPARATOR);
+  }
 
   fileContents.forEach(({ content, path }) => {
     const t = map(r.parse(content), (node) => {
@@ -476,7 +549,9 @@ async function scrape(srcDirectory: string): Promise<Ret> {
               logger.warn(
                 `No matching local file found for link with the URL "${
                   node.url
-                }" and text "${getLinkText(node)}". Check the Notion page for the file above.`
+                }" and text "${getLinkText(
+                  node
+                )}". Check the Notion page for the file above.`
               );
               logger.warn(WARNING_SEPARATOR);
 
