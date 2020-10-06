@@ -146,9 +146,15 @@ function toAbsolute(relativePath, absoluteDirPath) {
             dblDotCount++;
         return isDblDot;
     });
-    return absoluteDirPathParts
-        .concat(relativePathParts.slice(dblDotCount))
-        .join(path_1.sep);
+    if (dblDotCount === 0) {
+        return absoluteDirPathParts.concat(relativePathParts).join(path_1.sep);
+    }
+    else {
+        return absoluteDirPathParts
+            .slice(0, -dblDotCount)
+            .concat(relativePathParts.slice(dblDotCount))
+            .join(path_1.sep);
+    }
 }
 async function scrape(srcDirectory) {
     const dirItems = await readDir(srcDirectory);

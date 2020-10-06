@@ -274,9 +274,14 @@ function toAbsolute(relativePath: string, absoluteDirPath: string) {
     return isDblDot;
   });
 
-  return absoluteDirPathParts
-    .concat(relativePathParts.slice(dblDotCount))
-    .join(sep);
+  if (dblDotCount === 0) {
+    return absoluteDirPathParts.concat(relativePathParts).join(sep);
+  } else {
+    return absoluteDirPathParts
+      .slice(0, -dblDotCount)
+      .concat(relativePathParts.slice(dblDotCount))
+      .join(sep);
+  }
 }
 
 async function scrape(srcDirectory: string): Promise<Ret> {
